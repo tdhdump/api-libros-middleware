@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const ModelLibro = require('../models/libromodel');
 
-//Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');  // Importamos el middleware de autorización
+const authMiddleware = require('../middlewares/authMiddleware');
+const errorMiddleware = require('../middlewares/errorMiddleware');  // Importamos el middleware de manejo de errores
+
+
+
 
 // Obtener todos los libros (sin filtros)
 router.get('/libros', async (req, res) => {
@@ -11,7 +14,9 @@ router.get('/libros', async (req, res) => {
         const libros = await ModelLibro.find();  // Devuelve todos los libros sin aplicar filtros
         res.status(200).send(libros);
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al obtener los libros', error });
+        //res.status(500).send({ mensaje: 'Error al obtener los libros', error });
+        next(errorMiddleware);  // Delegamos el error al middleware de manejo de errores
+    
     }
 });
 
